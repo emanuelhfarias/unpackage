@@ -58,4 +58,8 @@ See my `packages.py` as example.
 
 ## TODO
 * test it with homebrew
+* add tests
+* add it to pypi
+
+
 
