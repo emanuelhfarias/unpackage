@@ -52,3 +52,8 @@ class Irssi:
 
 
 See my `packages.py` as example.
+
+
+## TODO
+* test it with homebrew
+
