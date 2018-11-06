@@ -1,3 +1,4 @@
+from __future__ import print_function
 import inspect
 import sys
 
@@ -7,14 +8,24 @@ from common import run, get_current_dir
 
 
 class Unpackage():
+    CRED = '\033[91m'
+    CSUC = '\033[92m'
+    CEND = '\033[0m'
+
+    def __init__(self):
+        self.pkg_manager = self._identify_package_manager()
 
     def install_package(self, name):
-        pkg_manager = self._identify_package_manager()
-        if pkg_manager:
-            command = pkg_manager.install(name)
-            output, error = run(command)
+        print("Installing {} ...".format(name), end="\r")
+        command = self.pkg_manager.install(name)
+        output, error = run(command)
+        if output and error == '':
+            print("{}{} installed successfully{}".format(self.CSUC, name, self.CEND))
         else:
-            print("Missing Package Manager!")
+            print("{}Error installing {}".format(self.CRED, name))
+            print("\t{}".format(output))
+            print("\t{}{}".format(error, self.CEND))
+            exit(1)
 
     def git_clone(self, package):
         destination = "{}/repos/{}".format(
@@ -32,6 +43,10 @@ class Unpackage():
 
 
     def all(self):
+        if self.pkg_manager is None:
+            print("Missing Package Manager!")
+            return
+
         packages = self._get_packages()
         for package in packages:
             if self._is_packaged_installed(package):
@@ -69,9 +84,14 @@ class Unpackage():
         for name, obj in inspect.getmembers(package_manager):
             if inspect.isclass(obj):
                 pkg_manager = obj()
-                output, error = run("which {}".format(pkg_manager.prefix))
-                if output:
-                    return pkg_manager
+                if pkg_manager.prefix:
+                    output, error = run(pkg_manager.prefix)
+                    if output:
+                        self._install_which(pkg_manager)
+                        return pkg_manager
+
+    def _install_which(self, pkg_manager):
+        run(pkg_manager.install('which'))
 
 Unpackage().all()
 

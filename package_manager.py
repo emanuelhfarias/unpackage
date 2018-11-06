@@ -23,7 +23,7 @@ class Apt(BasePackageManager):
 
 class Yum(BasePackageManager):
     prefix            = 'yum'
-    install_command   = 'install'
+    install_command   = 'install -y'
     uninstall_command = 'erase'
 
 
