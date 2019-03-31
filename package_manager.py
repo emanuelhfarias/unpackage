@@ -9,10 +9,10 @@ class BasePackageManager():
     uninstall_command = None
 
     def install(self, package):
-        return "{} {} {}".format(self.prefix, self.install_command, package)
+        return f'{self.prefix} {self.install_command} {package}'
 
     def uninstall(self, package):
-        return "{} {} {}".format(self.prefix, self.uninstall_command, package)
+        return f'{self.prefix} {self.uninstall_command} {package}'
 
 
 class Apt(BasePackageManager):
